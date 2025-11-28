@@ -337,7 +337,7 @@ class Slider:
 
         return box_filtered[iou_index], segment_filtered[iou_index]
 
-    def identify(self, source: Union[str, Path, bytes, np.ndarray], conf=CONF_THRESHOLD, iou=IOU_THRESHOLD, show=False):
+    def identify(self, source: Union[str, Path, bytes, np.ndarray], conf=CONF_THRESHOLD, iou=IOU_THRESHOLD):
         box_list = []
         mask_ndarray = None
 
@@ -357,13 +357,6 @@ class Slider:
                 box_list, _ = self.pick_out_mask(boxes.tolist(), segments)
                 mask_ndarray = masks[boxes.tolist().index(box_list)]
 
-        # 仅展示目标缺口
-        if show and box_list and mask_ndarray is not None:
-            sample = self.draw_segments(original_image, [box_list, ], [mask_ndarray, ])
-            cv2.imshow('result', sample)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-
         if box_list:
             box = box_list[:4]
             box_conf = float(box_list[4])
@@ -372,8 +365,7 @@ class Slider:
             box_conf = 0.0
         return box, box_conf
 
-    def identify_offset(self, source: Union[str, Path, bytes, np.ndarray], conf=CONF_THRESHOLD, iou=IOU_THRESHOLD,
-                        show=False):
+    def identify_offset(self, source: Union[str, Path, bytes, np.ndarray], conf=CONF_THRESHOLD, iou=IOU_THRESHOLD):
         """
         通过滑块图或者全图获取offset
         """
@@ -396,13 +388,6 @@ class Slider:
                 box_left = min(boxes, key=lambda x: x[0])
                 box_list = box_left.tolist()
                 mask_ndarray = masks[boxes.tolist().index(box_list)]
-
-        # 仅展示目标缺口
-        if show and box_list and mask_ndarray is not None:
-            sample = self.draw_segments(original_image, [box_list, ], [mask_ndarray, ])
-            cv2.imshow('result', sample)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
 
         if box_list:
             box = box_list[:4]
